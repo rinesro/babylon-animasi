@@ -13,7 +13,7 @@ const createScene = async () => {
 
   new HemisphericLight("light", new Vector3(0, 1, 0), scene);
 
-  // Load model + start animation
+  
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
   console.log("Model loaded:", result);
   result.animationGroups.forEach(group => group.start(true));
