@@ -1,22 +1,14 @@
 import {
-  Engine,
-  Scene,
-  ArcRotateCamera,
-  Vector3,
-  HemisphericLight,
-  DirectionalLight
+  Engine, Scene, ArcRotateCamera, Vector3,
+  HemisphericLight, DirectionalLight
 } from '@babylonjs/core';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 
 const canvas = document.getElementById('renderCanvas');
-if (!canvas) throw new Error("Canvas element with id 'renderCanvas' not found");
-
 const engine = new Engine(canvas, true);
 let scene;
-let animationGroup;
-let playForward = true;
-let animating = true;
+let walkAnimGroup;
 
 const createScene = async () => {
   scene = new Scene(engine);
@@ -25,51 +17,31 @@ const createScene = async () => {
   camera.attachControl(canvas, true);
 
   new HemisphericLight("light", new Vector3(0, 1, 0), scene);
-  const sun = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
-  sun.position = new Vector3(20, 40, 20);
+  const sunlight = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
+  sunlight.position = new Vector3(20, 40, 20);
 
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
-  animationGroup = result.animationGroups[0];
 
-  loopBackAndForth();
+  walkAnimGroup = result.animationGroups[0]; // simpan animasi utama
+  walkAnimGroup.start(true); // jalan otomatis
 };
 
-function loopBackAndForth() {
-  if (!animationGroup) return;
-
-  animationGroup.stop();
-  animationGroup.speedRatio = playForward ? 1 : -1;
-  animationGroup.goToFrame(playForward ? animationGroup.from : animationGroup.to);
-
-  const anim = animationGroup.play(false);
-  anim.onAnimationEndObservable.addOnce(() => {
-    playForward = !playForward;
-    if (animating) loopBackAndForth();
-  });
-}
-
 createScene().then(() => {
-  engine.runRenderLoop(() => {
-    if (scene) scene.render();
-  });
+  engine.runRenderLoop(() => scene.render());
 });
 
 window.addEventListener('resize', () => engine.resize());
 
-const playBtn = document.getElementById('playBtn');
-const stopBtn = document.getElementById('stopBtn');
-
-playBtn?.addEventListener('click', () => {
-  if (animationGroup && !animationGroup.isPlaying) {
-    animating = true;
-    loopBackAndForth();
+// Kontrol tombol play/pause
+document.getElementById('playBtn').onclick = () => {
+  if (walkAnimGroup) {
+    walkAnimGroup.start(true);
   }
-});
+};
 
-stopBtn?.addEventListener('click', () => {
-  if (animationGroup) {
-    animating = false;
-    animationGroup.stop();
-    animationGroup.goToFrame(animationGroup.from);
+document.getElementById('stopBtn').onclick = () => {
+  if (walkAnimGroup) {
+    walkAnimGroup.stop();
+    walkAnimGroup.animatables.forEach(a => a.reset()); // reset ke frame awal (diam tegak)
   }
-});
+};
