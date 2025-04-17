@@ -1,3 +1,4 @@
+
 import {
   Engine,
   Scene,
@@ -13,8 +14,8 @@ const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas, true);
 let scene;
 let animationGroup;
-let animatable;
 let playForward = true;
+let animating = true;
 
 const createScene = async () => {
   scene = new Scene(engine);
@@ -29,20 +30,20 @@ const createScene = async () => {
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
   animationGroup = result.animationGroups[0];
 
-  playDirectional(true); // start initial loop
+  loopBackAndForth();
 };
 
-function playDirectional(forward = true) {
+function loopBackAndForth() {
   if (!animationGroup) return;
 
   animationGroup.stop();
-  animationGroup.speedRatio = forward ? 1 : -1;
-  animationGroup.goToFrame(forward ? animationGroup.from : animationGroup.to);
+  animationGroup.speedRatio = playForward ? 1 : -1;
+  animationGroup.goToFrame(playForward ? animationGroup.from : animationGroup.to);
 
-  animatable = animationGroup.play(false);
-  animatable.onAnimationEndObservable.addOnce(() => {
+  const anim = animationGroup.play(false);
+  anim.onAnimationEndObservable.addOnce(() => {
     playForward = !playForward;
-    playDirectional(playForward);
+    if (animating) loopBackAndForth();
   });
 }
 
@@ -57,12 +58,14 @@ const stopBtn = document.getElementById('stopBtn');
 
 playBtn?.addEventListener('click', () => {
   if (animationGroup && !animationGroup.isPlaying) {
-    playDirectional(playForward);
+    animating = true;
+    loopBackAndForth();
   }
 });
 
 stopBtn?.addEventListener('click', () => {
   if (animationGroup) {
+    animating = false;
     animationGroup.stop();
     animationGroup.reset();
   }
