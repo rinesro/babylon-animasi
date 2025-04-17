@@ -44,6 +44,25 @@
       height: 100%;
       display: block;
     }
+    .controls {
+      margin-bottom: 2rem;
+    }
+
+    .controls button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      margin: 0 0.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .controls button:hover {
+      background-color: #008ecc;
+    }
 
     .description {
       max-width: 600px;
@@ -70,6 +89,10 @@
 <body>
   <div class="canvas-wrapper">
     <canvas id="renderCanvas"></canvas>
+  </div>
+  <div class="controls">
+    <button id="playBtn">Jalankan Animasi</button>
+    <button id="stopBtn">Hentikan Animasi</button>
   </div>
   <div class="description">
     <h2>Animasi Sederhana</h2>
