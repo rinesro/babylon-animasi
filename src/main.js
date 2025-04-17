@@ -5,6 +5,18 @@ import '@babylonjs/loaders/glTF';
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas, true);
+let currentAnimGroup;
+
+document.getElementById('playBtn').onclick = () => {
+  if (currentAnimGroup) currentAnimGroup.start(true);
+};
+
+document.getElementById('stopBtn').onclick = () => {
+  if (currentAnimGroup) {
+    currentAnimGroup.stop();
+    currentAnimGroup.animatables.forEach(anim => anim.animationStarted = false);
+  }
+};
 
 const createScene = async () => {
   const scene = new Scene(engine);
