@@ -1,4 +1,3 @@
-
 import {
   Engine,
   Scene,
@@ -38,7 +37,9 @@ function loopBackAndForth() {
 
   animationGroup.stop();
   animationGroup.speedRatio = playForward ? 1 : -1;
-  animationGroup.goToFrame(playForward ? animationGroup.from : animationGroup.to);
+
+  const from = playForward ? animationGroup.from : animationGroup.to;
+  animationGroup.goToFrame(from);
 
   const anim = animationGroup.play(false);
   anim.onAnimationEndObservable.addOnce(() => {
