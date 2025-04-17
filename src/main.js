@@ -29,20 +29,24 @@ const createScene = async () => {
 
   animationGroup = result.animationGroups[0];
 
-  animationGroup.onAnimationGroupEndObservable.add(() => {
-  if (playForward) {
-    animationGroup.stop();
-    animationGroup.goToFrame(animationGroup.to);
-    animationGroup.speedRatio = -1;
-    animationGroup.play(false);
-  } else {
-    animationGroup.stop();
-    animationGroup.goToFrame(animationGroup.from);
-    animationGroup.speedRatio = 1;
-    animationGroup.play(false);
-  }
-  playForward = !playForward;
-});
+  let animatable;
+
+  function playDirectional(forward = true) {
+    if (!animationGroup) return;
+
+      animationGroup.stop();
+      animationGroup.speedRatio = forward ? 1 : -1;
+      animationGroup.goToFrame(forward ? animationGroup.from : animationGroup.to);
+
+      animatable = animationGroup.play(false);
+      animatable.onAnimationEndObservable.addOnce(() => {
+        playDirectional(!forward);
+      });
+    }
+
+
+    playDirectional(true);
+
 
 
   animationGroup.play(false);
