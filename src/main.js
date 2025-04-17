@@ -10,6 +10,8 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 
 const canvas = document.getElementById('renderCanvas');
+if (!canvas) throw new Error("Canvas element with id 'renderCanvas' not found");
+
 const engine = new Engine(canvas, true);
 let scene;
 let animationGroup;
@@ -47,7 +49,9 @@ function loopBackAndForth() {
 }
 
 createScene().then(() => {
-  engine.runRenderLoop(() => scene.render());
+  engine.runRenderLoop(() => {
+    if (scene) scene.render();
+  });
 });
 
 window.addEventListener('resize', () => engine.resize());
@@ -66,6 +70,6 @@ stopBtn?.addEventListener('click', () => {
   if (animationGroup) {
     animating = false;
     animationGroup.stop();
-    animationGroup.reset();
+    animationGroup.goToFrame(animationGroup.from);
   }
 });
