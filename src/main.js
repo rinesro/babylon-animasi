@@ -1,6 +1,10 @@
 import {
-  Engine, Scene, ArcRotateCamera, Vector3,
-  HemisphericLight, DirectionalLight
+  Engine,
+  Scene,
+  ArcRotateCamera,
+  Vector3,
+  HemisphericLight,
+  DirectionalLight
 } from '@babylonjs/core';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
@@ -8,7 +12,7 @@ import '@babylonjs/loaders/glTF';
 const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas, true);
 let scene;
-let walkAnimGroup;
+let animationGroup;
 
 const createScene = async () => {
   scene = new Scene(engine);
@@ -17,13 +21,14 @@ const createScene = async () => {
   camera.attachControl(canvas, true);
 
   new HemisphericLight("light", new Vector3(0, 1, 0), scene);
-  const sunlight = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
-  sunlight.position = new Vector3(20, 40, 20);
+  const sun = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
+  sun.position = new Vector3(20, 40, 20);
 
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
 
-  walkAnimGroup = result.animationGroups[0]; // simpan animasi utama
-  walkAnimGroup.start(true); // jalan otomatis
+  // Simpan animasi pertama dari file glb
+  animationGroup = result.animationGroups[0];
+  animationGroup.start(true);
 };
 
 createScene().then(() => {
@@ -32,16 +37,19 @@ createScene().then(() => {
 
 window.addEventListener('resize', () => engine.resize());
 
-// Kontrol tombol play/pause
-document.getElementById('playBtn').onclick = () => {
-  if (walkAnimGroup) {
-    walkAnimGroup.start(true);
-  }
-};
+// Tombol kontrol
+const playBtn = document.getElementById('playBtn');
+const stopBtn = document.getElementById('stopBtn');
 
-document.getElementById('stopBtn').onclick = () => {
-  if (walkAnimGroup) {
-    walkAnimGroup.stop();
-    walkAnimGroup.animatables.forEach(a => a.reset()); // reset ke frame awal (diam tegak)
+playBtn?.addEventListener('click', () => {
+  if (animationGroup) {
+    animationGroup.start(true);
   }
-};
+});
+
+stopBtn?.addEventListener('click', () => {
+  if (animationGroup) {
+    animationGroup.stop();
+    animationGroup.reset(); // kembali ke frame awal
+  }
+});
