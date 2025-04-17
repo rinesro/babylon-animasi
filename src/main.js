@@ -9,14 +9,7 @@ import {
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 
-console.log("🚀 App started");
-
 const canvas = document.getElementById('renderCanvas');
-if (!canvas) {
-  console.error("❌ Canvas 'renderCanvas' tidak ditemukan di HTML.");
-  throw new Error("Canvas element not found");
-}
-
 const engine = new Engine(canvas, true);
 let scene;
 let animationGroup;
@@ -33,14 +26,10 @@ const createScene = async () => {
   const sun = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
   sun.position = new Vector3(20, 40, 20);
 
-  try {
-    const result = await SceneLoader.ImportMeshAsync("", "/models/", "nathan.glb", scene);
-    console.log("✅ Model loaded");
-    animationGroup = result.animationGroups[0];
-    loopBackAndForth();
-  } catch (err) {
-    console.error("❌ Gagal load model nathan.glb:", err);
-  }
+  const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
+  animationGroup = result.animationGroups[0];
+
+  loopBackAndForth();
 };
 
 function loopBackAndForth() {
@@ -48,8 +37,7 @@ function loopBackAndForth() {
 
   animationGroup.stop();
   animationGroup.speedRatio = playForward ? 1 : -1;
-  const from = playForward ? animationGroup.from : animationGroup.to;
-  animationGroup.goToFrame(from);
+  animationGroup.goToFrame(playForward ? animationGroup.from : animationGroup.to);
 
   const anim = animationGroup.play(false);
   anim.onAnimationEndObservable.addOnce(() => {
