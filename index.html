@@ -15,37 +15,44 @@
       --font-main: 'Segoe UI', sans-serif;
     }
 
-    body {
+    html, body {
       margin: 0;
-      font-family: var(--font-main);
-      background-color: var(--bg-light);
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
+      justify-content: center;
+      font-family: var(--font-main);
+      background-color: var(--bg-light);
     }
 
     .canvas-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      flex: 1;
       width: 100%;
-      max-width: 400px;
+      max-width: 600px;
       aspect-ratio: 1 / 1;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
       border-radius: 1rem;
-      overflow: hidden;
       background: #000;
-      margin-bottom: 2rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
 
     #renderCanvas {
       width: 100%;
       height: 100%;
       display: block;
+      touch-action: none;
     }
+
     .controls {
-      margin-bottom: 2rem;
+      margin: 1rem 0;
     }
 
     .controls button {
@@ -67,10 +74,11 @@
     .description {
       max-width: 600px;
       text-align: center;
-      background-color: rgb(24, 22, 22);
+      background-color: #181616;
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      color: var(--text-light);
     }
 
     .description h2 {
@@ -81,7 +89,6 @@
 
     .description p {
       font-size: 1.1rem;
-      color: var(--text-light);
       line-height: 1.6;
     }
   </style>
@@ -90,10 +97,12 @@
   <div class="canvas-wrapper">
     <canvas id="renderCanvas"></canvas>
   </div>
+
   <div class="controls">
     <button id="playBtn">Jalankan Animasi</button>
     <button id="stopBtn">Hentikan Animasi</button>
   </div>
+
   <div class="description">
     <h2>Animasi Sederhana</h2>
     <p>Animasi ini menampilkan karakter 3D dengan gerakan yang sedikit kacau namun menarik sebagai contoh visualisasi awal.</p>
