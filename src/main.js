@@ -1,4 +1,5 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight } from '@babylonjs/core';
+import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 
@@ -12,6 +13,8 @@ const createScene = async () => {
   camera.attachControl(canvas, true);
 
   new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+  const sunlight = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
+  sunlight.position = new Vector3(20, 40, 20);
 
   
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
