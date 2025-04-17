@@ -13,6 +13,7 @@ const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas, true);
 let scene;
 let animationGroup;
+let playForward = true;
 
 const createScene = async () => {
   scene = new Scene(engine);
@@ -26,9 +27,23 @@ const createScene = async () => {
 
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
 
-  // Simpan animasi pertama dari file glb
   animationGroup = result.animationGroups[0];
-  animationGroup.start(true);
+
+  animationGroup.onAnimationGroupEndObservable.add(() => {
+    if (playForward) {
+      animationGroup.play(false);
+      animationGroup.goToFrame(animationGroup.to);
+      animationGroup.speedRatio = -1;
+    } else {
+      animationGroup.play(false);
+      animationGroup.goToFrame(animationGroup.from);
+      animationGroup.speedRatio = 1;
+    }
+    playForward = !playForward;
+  });
+
+  animationGroup.play(false);
+  animationGroup.speedRatio = 1;
 };
 
 createScene().then(() => {
@@ -37,19 +52,19 @@ createScene().then(() => {
 
 window.addEventListener('resize', () => engine.resize());
 
-// Tombol kontrol
 const playBtn = document.getElementById('playBtn');
 const stopBtn = document.getElementById('stopBtn');
 
 playBtn?.addEventListener('click', () => {
-  if (animationGroup) {
-    animationGroup.start(true);
+  if (animationGroup && !animationGroup.isPlaying) {
+    animationGroup.play(false);
+    animationGroup.speedRatio = playForward ? 1 : -1;
   }
 });
 
 stopBtn?.addEventListener('click', () => {
   if (animationGroup) {
     animationGroup.stop();
-    animationGroup.reset(); // kembali ke frame awal
+    animationGroup.reset();
   }
 });
