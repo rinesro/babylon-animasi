@@ -30,17 +30,20 @@ const createScene = async () => {
   animationGroup = result.animationGroups[0];
 
   animationGroup.onAnimationGroupEndObservable.add(() => {
-    if (playForward) {
-      animationGroup.play(false);
-      animationGroup.goToFrame(animationGroup.to);
-      animationGroup.speedRatio = -1;
-    } else {
-      animationGroup.play(false);
-      animationGroup.goToFrame(animationGroup.from);
-      animationGroup.speedRatio = 1;
-    }
-    playForward = !playForward;
-  });
+  if (playForward) {
+    animationGroup.stop();
+    animationGroup.goToFrame(animationGroup.to);
+    animationGroup.speedRatio = -1;
+    animationGroup.play(false);
+  } else {
+    animationGroup.stop();
+    animationGroup.goToFrame(animationGroup.from);
+    animationGroup.speedRatio = 1;
+    animationGroup.play(false);
+  }
+  playForward = !playForward;
+});
+
 
   animationGroup.play(false);
   animationGroup.speedRatio = 1;
