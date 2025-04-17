@@ -1,25 +1,17 @@
-import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight } from '@babylonjs/core';
-import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
+import {
+  Engine, Scene, ArcRotateCamera, Vector3,
+  HemisphericLight, DirectionalLight
+} from '@babylonjs/core';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas, true);
-let currentAnimGroup;
-
-document.getElementById('playBtn').onclick = () => {
-  if (currentAnimGroup) currentAnimGroup.start(true);
-};
-
-document.getElementById('stopBtn').onclick = () => {
-  if (currentAnimGroup) {
-    currentAnimGroup.stop();
-    currentAnimGroup.animatables.forEach(anim => anim.animationStarted = false);
-  }
-};
+let scene;
+let walkAnimGroup;
 
 const createScene = async () => {
-  const scene = new Scene(engine);
+  scene = new Scene(engine);
 
   const camera = new ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), scene);
   camera.attachControl(canvas, true);
@@ -28,16 +20,28 @@ const createScene = async () => {
   const sunlight = new DirectionalLight("sun", new Vector3(-1, -2, -1), scene);
   sunlight.position = new Vector3(20, 40, 20);
 
-  
   const result = await SceneLoader.ImportMeshAsync("", "models/", "nathan.glb", scene);
-  console.log("Model loaded:", result);
-  result.animationGroups.forEach(group => group.start(true));
 
-  return scene;
+  walkAnimGroup = result.animationGroups[0]; // simpan animasi utama
+  walkAnimGroup.start(true); // jalan otomatis
 };
 
-createScene().then(scene => {
+createScene().then(() => {
   engine.runRenderLoop(() => scene.render());
 });
 
 window.addEventListener('resize', () => engine.resize());
+
+// Kontrol tombol play/pause
+document.getElementById('playBtn').onclick = () => {
+  if (walkAnimGroup) {
+    walkAnimGroup.start(true);
+  }
+};
+
+document.getElementById('stopBtn').onclick = () => {
+  if (walkAnimGroup) {
+    walkAnimGroup.stop();
+    walkAnimGroup.animatables.forEach(a => a.reset()); // reset ke frame awal (diam tegak)
+  }
+};
