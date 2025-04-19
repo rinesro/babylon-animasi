@@ -1,4 +1,4 @@
-// src/main.js
+
 import {
   Engine,
   Scene,
