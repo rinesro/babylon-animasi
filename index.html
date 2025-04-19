@@ -26,6 +26,7 @@
     }
 
     .canvas-wrapper {
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -43,6 +44,25 @@
       width: 100%;
       height: 100%;
       display: block;
+    }
+
+    #toggleAnimation {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s;
+    }
+
+    #toggleAnimation:hover {
+      background-color: #008ecc;
     }
 
     .description {
@@ -70,6 +90,7 @@
 <body>
   <div class="canvas-wrapper">
     <canvas id="renderCanvas"></canvas>
+    <button id="toggleAnimation">⏸ Hentikan</button>
   </div>
   <div class="description">
     <h2>Animasi Sederhana</h2>
