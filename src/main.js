@@ -93,8 +93,7 @@ let isMoving = false;
 
 function rotateSmoothly(fromAngle, toAngle) {
   const animation = new Animation('rotationAnim', 'rotation.y', 60, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
-
-  // Normalize angles
+  
   let delta = toAngle - fromAngle;
   if (delta > Math.PI) delta -= 2 * Math.PI;
   if (delta < -Math.PI) delta += 2 * Math.PI;
